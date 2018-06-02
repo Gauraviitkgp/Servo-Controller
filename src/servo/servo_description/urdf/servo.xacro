@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+
+<robot name="servo" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Constants for robot dimensions -->
+  <xacro:property name="PI" value="3.1415926535897931"/>
+  <xacro:property name="mass" value="1" /> <!-- arbitrary value for mass -->
+  <xacro:property name="mass1" value="5000" /> <!-- arbitrary value for mass -->
+  <xacro:property name="radius" value="0.05" /> <!-- Radii of the cylinder-->
+  <xacro:property name="length1" value="1.5" /> <!-- axel_holder -->
+  <xacro:property name="length2" value="1" /> <!-- Rotator -->
+  <xacro:property name="width" value="0.1" /> <!-- width of the beam -->
+  <xacro:property name="offset" value="0" /> <!-- width of the beam -->
+
+  <xacro:include filename="$(find servo_description)/urdf/servo.gazebo" />
+  <xacro:include filename="$(find servo_description)/urdf/materials.xacro" />
+  <!-- Used for fixing robot to Gazebo 'base_link' -->
+<!--  <link name="world"/>
+
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="axel_holder"/>
+  </joint>
+
+   Base Link -->
+  <link name="axel_holder">
+    <collision>
+      <origin xyz="${length1/2} 0 ${length1/2}" rpy="0 ${PI/2} 0"/>
+      <geometry>
+	       <box size="${length1} ${length1} ${length1}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="${length1/2} 0 ${length1/2}" rpy="0 ${PI/2} 0"/>
+      <geometry>
+	       <box size="${length1} ${length1} ${length1}"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="${length1/2} 0 ${length1/2}" rpy="0 0 0"/>
+      <mass value="${mass1}"/>
+      <inertia
+	  ixx="${mass1 / 12.0 * (length1*length1 + length1*length1)}" ixy="0.0" ixz="0.0"
+	  iyy="${mass1 / 12.0 * (length1*length1 + length1*length1)}" iyz="0.0"
+	  izz="${mass1 / 12.0 * (length1*length1 + length1*length1)}"/>
+    </inertial>
+  </link>
+
+  <joint name="joint1" type="continuous">
+    <parent link="axel_holder"/>
+    <child link="rotater"/>
+    <origin xyz="${1.5*length1+offset} 0 ${length1}" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="0.7"/>
+  </joint>
+
+
+  <link name="rotater">
+    <collision>
+      <origin xyz="0 0 ${length2/2}" rpy="0 0 0"/>
+      <geometry>
+	       <box size="${width} ${width} ${length2}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 ${length2/2}" rpy="0 0 0"/>
+      <geometry>
+	       <box size="${width} ${width} ${length2}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 ${length2/2}" rpy="0 0 0"/>
+      <mass value="${mass}"/>
+      <inertia
+	  ixx="${mass / 12.0 * (width*width + width*width)}" ixy="0.0" ixz="0.0"
+	  iyy="${mass / 12.0 * (length2*length2 + width*width)}" iyz="0.0"
+	  izz="${mass / 12.0 * (width*width + length2*length2)}"/>
+    </inertial>
+  </link>
+
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+
+</robot>
