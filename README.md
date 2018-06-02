@@ -57,5 +57,5 @@ If you want to run the code as a script.
 	publish in the topic, /servo/joint1_position_controller/command as it is in the code
 	add build and ros depends as 
 
-For further queries, mail me at gaurav07@iitkgp.ac.in, or add an issue
+For further queries like sdf integration, mail me at gaurav07@iitkgp.ac.in, or add an issue, 
 
